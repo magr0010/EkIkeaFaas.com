@@ -1,0 +1,146 @@
+{% extends "auth_base.html" %}
+
+{% block title %}{{ product.product_name }} — IKEA{% endblock %}
+{% block body_class %}ikea-home product-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<main class="ikea-container">
+
+    {# ---------- Breadcrumb ---------- #}
+    <nav class="shop-breadcrumb" aria-label="Brødkrumme">
+        <a href="{{ url_for('home') }}">Forside</a>
+        <span>›</span>
+        <a href="{{ url_for('home') }}">{{ product.category }}</a>
+        <span>›</span>
+        <span>{{ product.product_name }}</span>
+    </nav>
+
+    <div class="product-grid">
+
+        {# ---------- Produktbillede ---------- #}
+        <div class="product-image-area" aria-hidden="true">
+            <div class="product-image-main{% if product.image_url %} has-photo{% endif %}">
+                {% if product.image_url %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.product_name }}">
+                {% else %}
+                {%- if product.category == "Desk" -%}🪑
+                {%- elif product.category == "Chair" -%}💺
+                {%- elif product.category == "Sofa" -%}🛋️
+                {%- elif product.category == "Storage" -%}📦
+                {%- else -%}🪞
+                {%- endif -%}
+                {% endif %}
+            </div>
+            <div class="product-image-thumbs">
+                <div class="product-thumb active"></div>
+                <div class="product-thumb"></div>
+                <div class="product-thumb"></div>
+                <div class="product-thumb"></div>
+            </div>
+        </div>
+
+        {# ---------- Produkt-info + købsformularer ---------- #}
+        <div class="product-info-area">
+            <p class="product-category">{{ product.category }}</p>
+            <h1 class="product-title">{{ product.product_name }}</h1>
+            <p class="product-subtitle">{{ product.material_type }}</p>
+
+            <div class="product-availability {% if product.available_assets > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                {% if product.available_assets > 0 %}
+                    <span class="dot"></span> På lager — {{ product.available_assets }} stk. ledige
+                {% else %}
+                    <span class="dot"></span> Udsolgt
+                {% endif %}
+            </div>
+
+            <p class="product-description">
+                {{ product.product_name }} er fremstillet i {{ product.material_type|lower }} og har en
+                estimeret levetid på {{ product.expected_lifespan_years }} år. Manufacturing-baselinen
+                er {{ product.baseline_co2e_kg|dk_number(2) }} kg CO2e — med IKEA ReSpace amortiseres
+                den over den fulde levetid.
+            </p>
+
+            {# ---------- To CTA-bokse: Køb eller Lej ---------- #}
+            <div class="product-purchase-options">
+
+                {# Køb engangs #}
+                <form class="purchase-option purchase-buy" method="post" action="{{ url_for('cart_add') }}">
+                    <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                    <input type="hidden" name="kind" value="purchase">
+                    <div class="option-header">
+                        <h2>Køb</h2>
+                        <p class="option-tagline">Ejerskab — du beholder møblet</p>
+                    </div>
+                    <div class="option-price">
+                        <span class="price-large">{{ product.sale_price_dkk|dk_number(0) }}.-</span>
+                        <span class="price-suffix">DKK</span>
+                    </div>
+                    <ul class="option-benefits">
+                        <li>Engangskøb, ingen binding</li>
+                        <li>Fri brug og videresalg</li>
+                        <li>Levering inden for 5 hverdage</li>
+                    </ul>
+                    <button type="submit" class="btn-primary" {% if product.available_assets == 0 %}disabled{% endif %}>
+                        Læg i kurv
+                    </button>
+                </form>
+
+                {# Lej via IKEA ReSpace #}
+                <form class="purchase-option purchase-lease" method="post" action="{{ url_for('cart_add') }}">
+                    <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                    <input type="hidden" name="kind" value="lease">
+                    <div class="option-header">
+                        <h2>IKEA <span class="respace-accent">ReSpace</span></h2>
+                        <p class="option-tagline">Lej månedsvis — vi tager møblet tilbage</p>
+                    </div>
+                    <div class="option-price">
+                        <span class="price-large">{{ product.monthly_price_dkk|dk_number(0) }}.-</span>
+                        <span class="price-suffix">DKK / md</span>
+                    </div>
+
+                    <div class="form-field" style="margin: 16px 0 0;">
+                        <label for="rental_months">Vælg lejeperiode</label>
+                        <select class="form-select" name="rental_months" id="rental_months" required>
+                            <option value="3">3 måneder</option>
+                            <option value="6">6 måneder</option>
+                            <option value="12" selected>12 måneder</option>
+                            <option value="24">24 måneder</option>
+                        </select>
+                    </div>
+
+                    <ul class="option-benefits">
+                        <li>Fleksibel periode — opsig efter lejeperioden</li>
+                        <li>Vi henter møblet ved afslutning</li>
+                        <li>Bidrager til cirkulær økonomi (CO2e-besparelse)</li>
+                    </ul>
+                    <button type="submit" class="btn-primary respace-cta" {% if product.available_assets == 0 %}disabled{% endif %}>
+                        Lej via ReSpace
+                    </button>
+                </form>
+            </div>
+
+            {# ---------- Specifikationer ---------- #}
+            <section class="product-specs">
+                <h3>Specifikationer</h3>
+                <dl>
+                    <dt>Kategori</dt>           <dd>{{ product.category }}</dd>
+                    <dt>Materiale</dt>          <dd>{{ product.material_type }}</dd>
+                    <dt>Forventet levetid</dt>  <dd>{{ product.expected_lifespan_years }} år</dd>
+                    <dt>CO2e baseline</dt>      <dd>{{ product.baseline_co2e_kg|dk_number(2) }} kg CO2e</dd>
+                </dl>
+            </section>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

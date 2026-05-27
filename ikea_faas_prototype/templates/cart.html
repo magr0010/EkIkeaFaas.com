@@ -1,0 +1,144 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Min kurv — IKEA{% endblock %}
+{% block body_class %}ikea-home cart-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<main class="ikea-container">
+
+    <h1 class="cart-title">Min kurv {% if items %}<span class="cart-title-count">({{ items|length }})</span>{% endif %}</h1>
+
+    {% if items %}
+    <div class="cart-grid">
+
+        {# ---------- Varelinjer ---------- #}
+        <section class="cart-items">
+            {% for item in items %}
+            <article class="cart-item">
+                <div class="cart-item-image{% if item.image_url %} has-photo{% endif %}" aria-hidden="true">
+                    {% if item.image_url %}
+                    <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.product_name }}">
+                    {% else %}
+                    {%- if 'Skrivebord' in item.product_name -%}🪑
+                    {%- elif 'Kontorstol' in item.product_name -%}💺
+                    {%- elif 'Reol' in item.product_name -%}📦
+                    {%- else -%}🛋️
+                    {%- endif -%}
+                    {% endif %}
+                </div>
+                <div class="cart-item-body">
+                    <div class="cart-item-header">
+                        <h2 class="cart-item-name">{{ item.product_name }}</h2>
+                        <span class="cart-item-kind {{ item.kind }}">
+                            {% if item.kind == 'lease' %}IKEA ReSpace{% else %}Køb{% endif %}
+                        </span>
+                    </div>
+
+                    {% if item.kind == 'lease' %}
+                    <p class="cart-item-meta">
+                        Lejeperiode: {{ item.rental_months }} måneder · Engangskøb-pris ville være {{ (item.line_total * 1)|dk_number(2) }} DKK i alt over perioden
+                    </p>
+
+                    <div class="cart-item-footer">
+                        <div>
+                            <strong class="cart-item-price">{{ item.unit_price|dk_number(2) }} DKK<small style="font-weight: 400; font-size: 13px; color: var(--text-muted);"> / md</small></strong>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Samlet over {{ item.rental_months }} mdr: {{ item.line_total|dk_number(2) }} DKK
+                            </div>
+                        </div>
+                        <form method="post" action="{{ url_for('cart_remove', index=loop.index0) }}">
+                            <button type="submit" class="text-link cart-remove">Fjern</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <p class="cart-item-meta">Engangskøb · levering 5 hverdage</p>
+
+                    <div class="cart-item-footer">
+                        <strong class="cart-item-price">{{ item.line_total|dk_number(2) }} DKK</strong>
+                        <form method="post" action="{{ url_for('cart_remove', index=loop.index0) }}">
+                            <button type="submit" class="text-link cart-remove">Fjern</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+
+        {# ---------- Ordresammendrag ---------- #}
+        <aside class="cart-summary">
+            <h2>Ordresammendrag</h2>
+
+            <dl class="cart-summary-lines">
+                <dt>Antal varer</dt>
+                <dd>{{ items|length }}</dd>
+                <dt>Levering</dt>
+                <dd>Gratis</dd>
+                {% if purchase_total > 0 %}
+                <dt>Køb (engangsbetaling)</dt>
+                <dd>{{ purchase_total|dk_number(2) }} DKK</dd>
+                {% endif %}
+                {% if lease_monthly_total > 0 %}
+                <dt>Månedlig leje (ReSpace)</dt>
+                <dd>{{ lease_monthly_total|dk_number(2) }} DKK / md</dd>
+                <dt>Samlet lejeforpligtelse</dt>
+                <dd>{{ lease_commitment_total|dk_number(2) }} DKK</dd>
+                {% endif %}
+            </dl>
+
+            <div class="cart-summary-total">
+                <span>Total at betale i dag</span>
+                <strong>{{ due_today|dk_number(2) }} DKK</strong>
+            </div>
+
+            <p class="cart-summary-note">
+                {% if lease_monthly_total > 0 %}
+                Du betaler kun engangskøb i dag.
+                Den månedlige leje på <strong>{{ lease_monthly_total|dk_number(2) }} DKK / md</strong>
+                opkræves via FaaS-aftalen i lejeperioden — i alt
+                {{ lease_commitment_total|dk_number(2) }} DKK over hele perioden.
+                {% else %}
+                Engangskøb opkræves med det samme. Gratis levering.
+                {% endif %}
+            </p>
+
+            <form method="post" action="{{ url_for('checkout') }}">
+                <button type="submit" class="btn-primary cart-checkout-btn">Gå til kasse</button>
+            </form>
+
+            <a class="text-link cart-continue" href="{{ url_for('home') }}">Fortsæt med at handle</a>
+
+            <div class="cart-summary-info">
+                <p><strong>{{ customer.company_name }}</strong></p>
+                <p style="color: var(--text-muted); font-size: 13px;">
+                    {{ customer.contact_person }}<br>
+                    {{ customer.email }}<br>
+                    {% if customer.zip_code %}{{ customer.zip_code }}{% endif %}
+                </p>
+            </div>
+        </aside>
+
+    </div>
+    {% else %}
+
+    {# ---------- Tom kurv ---------- #}
+    <section class="cart-empty">
+        <div class="cart-empty-icon" aria-hidden="true">🛒</div>
+        <h2>Din kurv er tom</h2>
+        <p>Find dine næste møbler — køb dem eller lej dem via IKEA ReSpace.</p>
+        <a class="ikea-hero-cta" href="{{ url_for('home') }}">Til forsiden</a>
+    </section>
+
+    {% endif %}
+
+</main>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

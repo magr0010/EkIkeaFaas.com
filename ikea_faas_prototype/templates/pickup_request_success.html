@@ -1,0 +1,69 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Afhentning anmodet — Aftale {{ contract.contract_id }}{% endblock %}
+{% block body_class %}ikea-home customer-page pickup-success-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<div class="ikea-container">
+
+    {# Blå hero med bekræftelse #}
+    <section class="loyalty-hero" style="margin-bottom: 32px;">
+        <div class="loyalty-hero-content">
+            <p class="ikea-hero-eyebrow" style="color: rgba(255,255,255,0.9);">Anmodning modtaget · aftale {{ contract.contract_id }}</p>
+            <h1 class="loyalty-hero-title">Tak — vi henter snart møblet</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; max-width: 600px; margin: 12px 0 18px;">
+                Vi har registreret jeres anmodning om afhentning af
+                <strong>{{ contract.product_name }}</strong> ({{ contract.serial_number }}).
+                IKEA kontakter jer for at aftale tidspunkt og henter møblet.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a class="ikea-hero-cta" href="{{ url_for('customer', customer_id=customer.customer_id) }}">Tilbage til min profil</a>
+                <a class="ikea-hero-cta" href="{{ url_for('home') }}"
+                   style="background: rgba(0,0,0,0.18); color: var(--white);">Til forsiden</a>
+            </div>
+        </div>
+        <div class="loyalty-hero-badge" aria-hidden="true">
+            <span class="badge-inner">✓<br>Modtaget</span>
+        </div>
+    </section>
+
+    <section class="loyalty-impact-card" style="text-align: left;">
+        <p class="eyebrow">Næste skridt</p>
+        <h2 style="margin: 4px 0 18px;">IKEA tager over herfra</h2>
+
+        <ol style="line-height: 1.7; color: var(--text-default); padding-left: 18px; margin: 0 0 18px;">
+            <li>Vi kontakter jeres kontaktperson ({{ contract.contact_person }}) for at aftale et tidspunkt.</li>
+            <li>Vores chauffør henter møblet på adressen.</li>
+            <li>IKEA foretager den endelige vurdering af stand og bogfører
+                transport-CO2e og refurbishment-aktiviteter på aftalen.</li>
+            <li>Når returen er registreret, opdateres jeres CO2e-besparelse
+                automatisk på kvitteringen.</li>
+        </ol>
+
+        {% if customer_notes %}
+        <div class="loyalty-card" style="background: #FFF8DC; border: 1px solid #F4D03F; margin-top: 8px;">
+            <h3 style="font-size: 15px; margin: 0 0 6px;">Jeres bemærkning</h3>
+            <p style="font-size: 14px; margin: 0; white-space: pre-line;">{{ customer_notes }}</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 8px 0 0;">
+                Bemærkningen er kun til information. Den autoritative
+                standsvurdering foretages af IKEA ved afhentning.
+            </p>
+        </div>
+        {% endif %}
+
+        <p class="note" style="margin-top: 18px;">
+            Du behøver ikke at gøre mere lige nu. I hører fra os snarest.
+        </p>
+    </section>
+
+</div>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

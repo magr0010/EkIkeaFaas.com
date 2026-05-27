@@ -1,0 +1,48 @@
+{# IKEA-stil topbar — bruges på /home og /customer/<id>.
+   Forventer at customer-objektet er tilgængeligt (eller current_user_id i context). #}
+
+<header class="ikea-topbar">
+    <a class="ikea-topbar-logo" href="{{ url_for('home') }}">
+        {% include "_ikea_logo.html" %}
+    </a>
+
+    <form class="ikea-search" onsubmit="event.preventDefault();">
+        <input type="search" placeholder="Hvad er du på udkig efter?" aria-label="Søg">
+        <button type="submit" class="ikea-search-btn" aria-label="Søg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </button>
+    </form>
+
+    <div class="ikea-topbar-actions">
+        {% if customer %}
+        <a class="ikea-topbar-link" href="{{ url_for('customer', customer_id=customer.customer_id) }}">
+            <span class="ikea-avatar">{{ (customer.contact_person or customer.company_name)[:1]|upper }}{{ ((customer.contact_person or '').split(' ')|last)[:1]|upper }}</span>
+            <span>Hej {{ customer.contact_person.split(' ')[0] if customer.contact_person else customer.company_name }}!</span>
+        </a>
+        {% endif %}
+        <a class="ikea-topbar-link" href="{{ url_for('new_contract') }}" title="Opret ny aftale">
+            <span class="icon">➕</span>
+        </a>
+        <a class="ikea-topbar-link ikea-cart-link" href="{{ url_for('cart') }}" title="Kurv" aria-label="Kurv">
+            <span class="icon">🛒</span>
+            {% if cart_count and cart_count > 0 %}
+            <span class="ikea-cart-badge">{{ cart_count }}</span>
+            {% endif %}
+        </a>
+        <a class="ikea-topbar-link" href="{{ url_for('logout') }}" title="Log ud">
+            <span class="icon">↪</span>
+        </a>
+    </div>
+</header>
+
+<nav class="ikea-subnav" aria-label="Kategorier">
+    <a href="{{ url_for('home') }}">Produkter</a>
+    <a href="#">Rum</a>
+    <a href="#">Tilbud</a>
+    <a href="#">Trends &amp; Design</a>
+    <a href="#">Servicer</a>
+    <a href="{{ url_for('admin') }}">IKEA dashboard</a>
+</nav>

@@ -1,0 +1,93 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Tak for din ordre — IKEA{% endblock %}
+{% block body_class %}ikea-home customer-page checkout-success-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<main class="ikea-container">
+
+    {# ---------- Bekræftelses-hero ---------- #}
+    <section class="loyalty-hero" style="margin-bottom: 32px;">
+        <div class="loyalty-hero-content">
+            <p class="ikea-hero-eyebrow" style="color: rgba(255,255,255,0.9);">Ordrebekræftelse</p>
+            <h1 class="loyalty-hero-title">Tak for din ordre!</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; max-width: 580px; margin: 12px 0 18px;">
+                Vi har modtaget din ordre og opretter aftaler og leverancer nu.
+                Du kan altid finde dine kvitteringer og aftaler på din profil.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a class="ikea-hero-cta" href="{{ url_for('customer', customer_id=customer.customer_id) }}">Til min profil</a>
+                <a class="ikea-hero-cta" href="{{ url_for('home') }}"
+                   style="background: rgba(0,0,0,0.18); color: var(--white);">Fortsæt med at handle</a>
+            </div>
+        </div>
+        <div class="loyalty-hero-badge" aria-hidden="true">
+            <span class="badge-inner">✓<br>Ordre</span>
+        </div>
+    </section>
+
+    {# ---------- Køb ---------- #}
+    {% if purchases %}
+    <section class="loyalty-impact-card" style="text-align: left;">
+        <h2 style="margin: 0 0 18px;">Køb ({{ purchases|length }})</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ordre-ID</th>
+                    <th>Produkt</th>
+                    <th>Pris</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in purchases %}
+                <tr>
+                    <td>#{{ p.purchase_id }}</td>
+                    <td>{{ p.product_name }}</td>
+                    <td>{{ p.price|dk_number(2) }} DKK</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
+
+    {# ---------- FaaS-aftaler ---------- #}
+    {% if contracts %}
+    <section class="loyalty-impact-card" style="text-align: left;">
+        <h2 style="margin: 0 0 18px;">IKEA ReSpace-aftaler ({{ contracts|length }})</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Aftale-ID</th>
+                    <th>Produkt</th>
+                    <th>Periode</th>
+                    <th>Sparet CO2e</th>
+                    <th>Kvittering</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in contracts %}
+                <tr>
+                    <td>#{{ c.contract_id }}</td>
+                    <td>{{ c.product_name }}</td>
+                    <td>{{ c.rental_months }} måneder</td>
+                    <td>{{ c.co2e_saved|dk_number(2) }} kg CO2e</td>
+                    <td><a class="customer-link" href="{{ url_for('impact', contract_id=c.contract_id) }}">Se kvittering</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
+
+</main>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

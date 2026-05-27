@@ -1,0 +1,255 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f5f1;
+    color: #111;
+}
+
+.topbar {
+    background: #0058a3;
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 18px;
+    font-weight: 700;
+}
+
+.container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+}
+
+.hero {
+    background: #ffdb00;
+    padding: 36px;
+    border-radius: 22px;
+    margin-bottom: 24px;
+}
+
+.hero.compact {
+    padding: 28px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin: 0 0 10px;
+    color: #0058a3;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+.card, .product-card {
+    background: white;
+    padding: 26px;
+    border-radius: 22px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+    gap: 8px;
+}
+
+input, select, textarea {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #ccd3d8;
+    font-size: 16px;
+}
+
+input[readonly] {
+    background: #f0f3f5;
+    color: #333;
+    cursor: not-allowed;
+}
+
+.wide {
+    grid-column: span 2;
+}
+
+button, .button {
+    background: #0058a3;
+    color: white;
+    border: 0;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.button.secondary {
+    background: #111;
+}
+
+.impact-card {
+    text-align: center;
+}
+
+.impact-number {
+    font-size: 56px;
+    font-weight: 900;
+    color: #0a7d36;
+    margin: 22px 0 6px;
+}
+
+.impact-label {
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.metrics div {
+    background: white;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.metrics span {
+    display: block;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.metrics strong {
+    font-size: 24px;
+}
+
+.note {
+    color: #555;
+    font-size: 14px;
+}
+
+.chart-wrapper {
+    max-width: 560px;
+    margin: 0 auto 28px;
+}
+
+.breakdown-table {
+    max-width: 520px;
+    margin: 0 auto 28px;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.breakdown-table td {
+    padding: 8px 14px;
+    border: none;
+    border-bottom: 1px solid #e6e6e6;
+    text-align: left;
+}
+
+.breakdown-table td.value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.breakdown-table tr.total td {
+    border-top: 2px solid #111;
+    border-bottom: none;
+    padding-top: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    color: #0a7d36;
+}
+
+.customer-link {
+    color: #0058a3;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.customer-link:hover {
+    text-decoration: underline;
+}
+
+.actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+th, td {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #f0f3f5;
+}
+
+@media (max-width: 760px) {
+    .topbar {
+        display: block;
+    }
+
+    nav a {
+        display: block;
+        margin: 12px 0 0;
+    }
+
+    .form-grid,
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .wide {
+        grid-column: span 1;
+    }
+}

@@ -1,0 +1,171 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Kvittering — Aftale {{ data.contract_id }}{% endblock %}
+{% block body_class %}ikea-home customer-page impact-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<div class="ikea-container">
+
+    {# Blå hero — celebratorisk #}
+    <section class="loyalty-hero" style="margin-bottom: 32px;">
+        <div class="loyalty-hero-content">
+            <p class="ikea-hero-eyebrow" style="color: rgba(255,255,255,0.9);">Kvittering · aftale {{ data.contract_id }}</p>
+            <h1 class="loyalty-hero-title">Tak for din nye FaaS-aftale!</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; max-width: 540px; margin: 12px 0 18px;">
+                Aftalen på <strong>{{ data.product_name }}</strong> ({{ data.serial_number }})
+                er nu oprettet for {{ data.company_name }}. Nedenfor ser du den estimerede
+                CO2e-effekt.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a class="ikea-hero-cta" href="{{ url_for('customer', customer_id=current_user_id or '1') }}">Til min profil</a>
+                {% if data.status == "active" %}
+                <a class="ikea-hero-cta" href="{{ url_for('pickup_request', contract_id=data.contract_id) }}"
+                   style="background: rgba(0,0,0,0.18); color: var(--white);">Anmod om afhentning</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="loyalty-hero-badge" aria-hidden="true">
+            <span class="badge-inner">Aftale<br>#{{ data.contract_id }}</span>
+        </div>
+    </section>
+
+    {# CO2e-impact card #}
+    <section class="loyalty-impact-card">
+        <p class="eyebrow">Estimeret CO2e-besparelse</p>
+        <div class="impact-number">{{ data.co2e_saved_kg|dk_number(2) }} kg CO2e</div>
+        <p class="impact-label">Estimeret besparelse sammenlignet med et nyt produkt</p>
+
+        <table class="breakdown-table">
+            <tbody>
+                <tr>
+                    <td>Baseline (engangskøb)</td>
+                    <td class="value">{{ data.baseline_co2e_kg|dk_number(2) }} kg CO2e</td>
+                </tr>
+                <tr>
+                    <td>− Cirkulær emission (manufacturing-andel)</td>
+                    <td class="value">{{ data.circular_co2e_kg|dk_number(2) }} kg CO2e</td>
+                </tr>
+                <tr class="total">
+                    <td>= Netto-besparelse</td>
+                    <td class="value">{{ data.co2e_saved_kg|dk_number(2) }} kg CO2e</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="chart-wrapper">
+            <canvas id="co2Chart"
+                data-baseline="{{ data.baseline_co2e_kg }}"
+                data-circular="{{ data.circular_co2e_kg }}"></canvas>
+        </div>
+
+        <div class="metrics">
+            <div>
+                <span>Cirkulær påvirkning</span>
+                <strong>{{ data.circular_co2e_kg|dk_number(2) }} kg CO2e</strong>
+            </div>
+            <div>
+                <span>Lejeperiode</span>
+                <strong>{{ data.start_date }} &rarr; {{ data.end_date }}</strong>
+            </div>
+            <div>
+                <span>Antal tidligere livscyklusser</span>
+                <strong>{{ data.lifecycle_count }}</strong>
+            </div>
+        </div>
+
+        <p class="note">
+            Tallene er testdata til prototypen og er ikke officielle IKEA-tal.
+            Transport-CO2e bogføres separat når aftalen returneres.
+        </p>
+    </section>
+
+    {# Aftaledetaljer #}
+    <section class="loyalty-contracts-card">
+        <h2 style="margin: 0 0 18px;">Aftaledetaljer</h2>
+        <div class="metrics" style="grid-template-columns: repeat(2, 1fr);">
+            <div>
+                <span>Kunde</span>
+                <strong>{{ data.company_name }}</strong>
+            </div>
+            <div>
+                <span>Kontaktperson</span>
+                <strong>{{ data.contact_person }}</strong>
+            </div>
+            <div>
+                <span>Produkt</span>
+                <strong>{{ data.product_name }}</strong>
+            </div>
+            <div>
+                <span>Serienummer</span>
+                <strong>{{ data.serial_number }}</strong>
+            </div>
+            <div>
+                <span>Månedlig pris</span>
+                <strong>{{ data.monthly_price|dk_number(2) }} DKK</strong>
+            </div>
+            <div>
+                <span>Kategori</span>
+                <strong>{{ data.category }}</strong>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    (function () {
+        const canvas = document.getElementById("co2Chart");
+        if (!canvas) return;
+
+        const baseline = parseFloat(canvas.dataset.baseline);
+        const circular = parseFloat(canvas.dataset.circular);
+        const fmt = (n) => n.toFixed(2).replace(".", ",") + " kg CO2e";
+
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels: ["Nyt produkt", "FaaS (cirkulær)"],
+                datasets: [{
+                    label: "CO2e-påvirkning",
+                    data: [baseline, circular],
+                    backgroundColor: ["#b00020", "#0a7d36"],
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "CO2e-påvirkning: nyt produkt vs. FaaS",
+                        font: { size: 16, weight: "700" },
+                        color: "#111"
+                    },
+                    tooltip: { callbacks: { label: (ctx) => fmt(ctx.parsed.y) } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: "kg CO2e" },
+                        ticks: { callback: (v) => v + " kg" }
+                    }
+                }
+            }
+        });
+    })();
+</script>
+{% endblock %}

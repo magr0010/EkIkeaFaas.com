@@ -1,0 +1,98 @@
+{% extends "auth_base.html" %}
+
+{% set first_name = customer.contact_person.split(' ')[0] if customer.contact_person else customer.company_name %}
+
+{% block title %}IKEA — Nye produkter{% endblock %}
+{% block body_class %}ikea-home shop-home{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<main class="ikea-container shop-container">
+
+    {# ---------- Webshop-hero ---------- #}
+    <section class="shop-hero">
+        <div class="shop-hero-text">
+            <p class="ikea-hero-eyebrow">Nye produkter · {{ first_name }}</p>
+            <h1 class="shop-hero-title">Nye favoritter,<br>fleksible løsninger</h1>
+            <p class="shop-hero-sub">
+                Køb dine møbler eller lej dem via <strong>IKEA ReSpace</strong> —
+                vores Furniture-as-a-Service-løsning.
+            </p>
+        </div>
+    </section>
+
+    {# ---------- Filterstribe (visuel) ---------- #}
+    <div class="shop-filterbar">
+        <span class="shop-filterbar-label">Filtrér:</span>
+        <button type="button" class="shop-chip active">Alle</button>
+        <button type="button" class="shop-chip">Skriveborde</button>
+        <button type="button" class="shop-chip">Stole</button>
+        <button type="button" class="shop-chip">Sofaer</button>
+        <button type="button" class="shop-chip">Lænestole</button>
+        <span class="shop-result-count">{{ products|length }} produkter</span>
+    </div>
+
+    {# ---------- Produkt-grid (klikbar) ---------- #}
+    <div class="shop-products">
+        {% for product in products %}
+        <a class="shop-product-card" href="{{ url_for('product', product_id=product.product_id) }}">
+            <div class="shop-product-image{% if product.image_url %} has-photo{% endif %}" aria-hidden="true">
+                {% if product.image_url %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.product_name }}">
+                {% else %}
+                {%- if product.category == "Desk" -%}🪑
+                {%- elif product.category == "Chair" -%}💺
+                {%- elif product.category == "Sofa" -%}🛋️
+                {%- elif product.category == "Storage" -%}📦
+                {%- else -%}🪞
+                {%- endif -%}
+                {% endif %}
+            </div>
+            <div class="shop-product-info">
+                <div class="shop-product-name">{{ product.product_name }}</div>
+                <div class="shop-product-meta">{{ product.category }} · {{ product.material_type }}</div>
+
+                <div class="shop-product-pricing">
+                    <div class="shop-price-sale">
+                        <span class="price-value">{{ product.sale_price_dkk|dk_number(0) }}.-</span>
+                        <span class="price-label">Køb</span>
+                    </div>
+                    <div class="shop-price-divider"></div>
+                    <div class="shop-price-lease">
+                        <span class="price-value">{{ product.monthly_price_dkk|dk_number(0) }}.-<small>/mdr</small></span>
+                        <span class="price-label">IKEA ReSpace</span>
+                    </div>
+                </div>
+
+                <div class="shop-product-availability">
+                    {{ product.available_assets }} på lager
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    {# ---------- Salgsbanner ---------- #}
+    <section class="shop-promo">
+        <div>
+            <p class="ikea-hero-eyebrow">IKEA ReSpace</p>
+            <h2 class="shop-promo-title">Lej i stedet for at eje</h2>
+            <p class="shop-promo-text">
+                Med IKEA ReSpace betaler du en lav månedlig pris og returnerer møblet
+                når du er færdig — vi giver det en ny livscyklus. Du sparer CO2e, og
+                vi holder produkterne i kredsløb.
+            </p>
+        </div>
+        <a class="ikea-hero-cta" href="{{ url_for('new_contract') }}">Læs mere om ReSpace</a>
+    </section>
+
+</main>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

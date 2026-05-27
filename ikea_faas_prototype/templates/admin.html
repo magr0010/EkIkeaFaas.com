@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero compact">
+    <div>
+        <p class="eyebrow">Internt dashboard</p>
+        <h1>Datastyring for FaaS-returflow</h1>
+        <p>Dashboardet viser aftaler, møbelstatus, returneringer og samlet estimeret CO2-besparelse.</p>
+    </div>
+</section>
+
+<section class="metrics">
+    <div>
+        <span>FaaS-aftaler</span>
+        <strong>{{ summary.contracts }}</strong>
+    </div>
+    <div>
+        <span>Samlet CO2-besparelse</span>
+        <strong>{{ summary.total_saved|dk_number(2) }} kg CO2e</strong>
+    </div>
+    <div>
+        <span>Gennemsnitlig besparelse</span>
+        <strong>{{ summary.avg_saved|dk_number(2) }} kg CO2e</strong>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Aktive og returnerede aftaler</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Kunde</th>
+                <th>Produkt</th>
+                <th>Serienummer</th>
+                <th>Status</th>
+                <th>CO2 sparet</th>
+                <th>Handling</th>
+            </tr>
+        </thead>
+        <tbody>
+           {% for row in contracts %}
+            <tr>
+                <td>{{ row.contract_id }}</td>
+                <td>
+                    <a class="customer-link" href="{{ url_for('customer', customer_id=row.customer_id) }}">{{ row.company_name }}</a><br>
+                    <small>{{ row.contact_person }}</small>
+                </td>
+                <td>{{ row.product_name }}</td>
+                <td>{{ row.serial_number }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.co2e_saved_kg|dk_number(2) }} kg CO2e</td>
+                <td>
+                    {% if row.status == "active" %}
+                    <a href="{{ url_for('register_return', contract_id=row.contract_id) }}">Registrer retur</a>
+                    {% else %}
+                    Afsluttet
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Møbelaktiver</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Serienummer</th>
+                <th>Stand</th>
+                <th>Status</th>
+                <th>Livscyklusser</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in assets %}
+            <tr>
+                <td>{{ row.product_name }}</td>
+                <td>{{ row.serial_number }}</td>
+                <td>{{ row.condition_grade }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.lifecycle_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Returneringer</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Return ID</th>
+                <th>Dato</th>
+                <th>Kunde</th>
+                <th>Produkt</th>
+                <th>Stand</th>
+                <th>Næste handling</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in returns %}
+        <tr>
+    <td>{{ row.return_id }}</td>
+    <td>{{ row.return_date }}</td>
+    <td>
+        {{ row.company_name }}<br>
+        <small>{{ row.contact_person }}</small>
+    </td>
+    <td>{{ row.product_name }}</td>
+    <td>{{ row.condition_grade }}</td>
+    <td>{{ row.next_action }}</td>
+</tr>
+{% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

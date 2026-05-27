@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="da">
+<head>
+    <meta charset="utf-8">
+    <title>IKEA FaaS Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">IKEA FaaS</div>
+    <nav>
+        {% if current_user_id %}
+            <a href="{{ url_for('customer', customer_id=current_user_id) }}">Min profil</a>
+            <a href="{{ url_for('new_contract') }}">Opret ny aftale</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Log ind</a>
+        {% endif %}
+        <a href="{{ url_for('admin') }}">IKEA dashboard</a>
+        <a href="{{ url_for('api_products') }}">API produkter</a>
+        {% if current_user_id %}
+            <a href="{{ url_for('logout') }}">Log ud</a>
+        {% endif %}
+    </nav>
+</header>
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

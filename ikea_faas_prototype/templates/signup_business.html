@@ -1,0 +1,196 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Opret erhvervskunde · IKEA FaaS{% endblock %}
+{% block body_class %}signup-page{% endblock %}
+
+{% block content %}
+<div class="auth-layout">
+
+    <aside class="auth-left">
+        <div class="auth-left-top">
+            <a href="{{ url_for('login') }}" class="auth-back" aria-label="Tilbage">&larr;</a>
+            {% include "_ikea_logo.html" %}
+        </div>
+
+        <div class="auth-left-content">
+            <h1 class="auth-heading">Bliv medlem af IKEA Business Network og få:</h1>
+            <ul class="signup-benefits">
+                <li>Indretningsmøde til 0.-</li>
+                <li>Særlige tilbud til erhverv</li>
+                <li>Adgang til IKEA ReSpace tilbud</li>
+                <li>50% rabat på fordele hos VISMA Logbuy</li>
+                <li>Nem adgang til købshistorik og kvitteringer</li>
+            </ul>
+            <p class="signup-tagline">… og meget mere!</p>
+        </div>
+
+        <footer class="auth-footer">
+            IKEA.dk &middot; <a href="#">Cookie politik</a> og <a href="#">Håndtering af persondata</a><br>
+            &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+            <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+        </footer>
+    </aside>
+
+    <main class="auth-right">
+        <form class="signup-form" method="post" action="{{ url_for('signup_business') }}" novalidate>
+
+            <p style="color: var(--text-muted); font-size: 15px; line-height: 1.5;">
+                Bliv medlem og tilmeld dig vores nyhedsbrev fra IKEA Business Network,
+                og stå forrest i køen til alle vores fordele.
+                Er du allerede medlem?
+                <a class="text-link" href="{{ url_for('login') }}">Log ind her!</a>
+            </p>
+
+            {% if errors %}
+            <div class="alert alert-error" role="alert">
+                <ul style="margin: 0; padding-left: 18px;">
+                    {% for err in errors %}<li>{{ err }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <h2 class="form-section-title">Virksomhedsinformation</h2>
+
+            <div class="form-field">
+                <label for="company_name">Virksomhedsnavn</label>
+                <input class="form-input" type="text" name="company_name" id="company_name" required
+                       value="{{ form.company_name if form else '' }}">
+            </div>
+
+            <div class="form-field">
+                <label for="cvr_number">Virksomhedens CVR/EAN nummer
+                    <span class="input-hint" style="font-size: 13px; color: var(--text-muted);">
+                        (du skal have rettighed til at benytte det indtastede CVR/EAN nummer)
+                    </span>
+                </label>
+                <input class="form-input" type="text" name="cvr_number" id="cvr_number" required
+                       value="{{ form.cvr_number if form else '' }}">
+            </div>
+
+            <div class="form-field">
+                <label for="industry">Branche (valgfri)</label>
+                <select class="form-select" name="industry" id="industry">
+                    <option value="">Vælg branche</option>
+                    <option>Kontor og administration</option>
+                    <option>Detailhandel</option>
+                    <option>Hotel og restauration</option>
+                    <option>Sundhed og pleje</option>
+                    <option>Andet</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="country">Land</label>
+                <select class="form-select" name="country" id="country">
+                    <option selected>Danmark</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="street">Vejnavn, husnr. og evt. etagenr.</label>
+                <input class="form-input" type="text" name="street" id="street">
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="zip_code">Postnummer</label>
+                    <input class="form-input" type="text" name="zip_code" id="zip_code"
+                           value="{{ form.zip_code if form else '' }}">
+                </div>
+                <div class="form-field">
+                    <label for="city">By</label>
+                    <input class="form-input" type="text" name="city" id="city">
+                </div>
+            </div>
+
+            <h2 class="form-section-title">Kontaktperson</h2>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="first_name">Fornavn</label>
+                    <input class="form-input" type="text" name="first_name" id="first_name" required
+                           value="{{ form.first_name if form else '' }}">
+                </div>
+                <div class="form-field">
+                    <label for="last_name">Efternavn</label>
+                    <input class="form-input" type="text" name="last_name" id="last_name" required
+                           value="{{ form.last_name if form else '' }}">
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="email">E-mail</label>
+                <input class="form-input" type="email" name="email" id="email" required
+                       value="{{ form.email if form else '' }}">
+                <span class="input-hint">
+                    Undlad venligst generiske e-mail adresser, som f.eks. info@…,
+                    da de muligvis ikke modtager vores meddelelser
+                </span>
+            </div>
+
+            <div class="form-field">
+                <label for="password">Adgangskode <span style="color: var(--text-muted); font-weight: 400;">(mindst 8 tegn)</span></label>
+                <div class="input-with-icon">
+                    <input class="form-input" type="password" name="password" id="password" required minlength="8" autocomplete="new-password">
+                    <button type="button" class="input-icon-btn" id="toggle-password" aria-label="Vis adgangskode">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" name="newsletter" id="newsletter">
+                <label for="newsletter">
+                    Ja tak, jeg vil gerne modtage nyhedsbreve fra IKEA Business Network og
+                    relevant markedsføring med tilbud, rabatter, inspiration m.m.
+                    <a class="text-link" href="#">Læs mere om markedsføring og kommunikation</a>
+                </label>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" name="terms_accepted" id="terms_accepted" required>
+                <label for="terms_accepted">
+                    Jeg bekræfter, på vegne af virksomheden jeg repræsenterer,
+                    at jeg har læst og forstået
+                    <a class="text-link" href="#">Vilkår og betingelser</a> og
+                    <a class="text-link" href="#">Håndtering af persondata</a>.
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submit-btn" disabled>Fortsæt</button>
+
+        </form>
+    </main>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Aktivér Fortsæt-knappen kun når vilkår-checkbox er afkrydset.
+    // Backend gentager valideringen.
+    (function () {
+        const terms = document.getElementById("terms_accepted");
+        const btn = document.getElementById("submit-btn");
+        if (!terms || !btn) return;
+        const sync = () => { btn.disabled = !terms.checked; };
+        terms.addEventListener("change", sync);
+        sync();
+    })();
+
+    // Vis/skjul adgangskode via øje-ikon.
+    (function () {
+        const toggle = document.getElementById("toggle-password");
+        const pwd = document.getElementById("password");
+        if (!toggle || !pwd) return;
+        toggle.addEventListener("click", function () {
+            const isHidden = pwd.type === "password";
+            pwd.type = isHidden ? "text" : "password";
+            toggle.setAttribute("aria-label", isHidden ? "Skjul adgangskode" : "Vis adgangskode");
+        });
+    })();
+</script>
+{% endblock %}

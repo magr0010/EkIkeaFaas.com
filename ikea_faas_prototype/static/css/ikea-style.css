@@ -1,0 +1,2088 @@
+/* ==========================================================================
+   IKEA FaaS Prototype — design-system
+   Studenterprototype, IKKE en officiel IKEA side. Bygget med inspiration
+   fra ikea.dk men uden brug af IKEAs originale assets.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&display=swap");
+
+:root {
+    /* Brand-farver */
+    --ikea-blue:   #0058A3;
+    --ikea-yellow: #FFDB00;
+    --black:       #111111;
+    --white:       #FFFFFF;
+
+    /* Tekst */
+    --text-default: #111111;
+    --text-muted:   #484848;
+    --text-error:   #B00020;
+
+    /* Inputs */
+    --input-border:       #929292;
+    --input-border-focus: #111111;
+    --input-bg-error:     #FDECEE;
+    --input-text-hint:    #767676;
+
+    /* Knapper */
+    --btn-primary-bg:       #111111;
+    --btn-primary-bg-hover: #000000;
+    --btn-secondary-border: #111111;
+    --btn-secondary-bg-hover: #F5F5F5;
+
+    /* Layout */
+    --radius-input:  4px;
+    --radius-pill:   999px;
+    --font-stack:    "Noto Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- Reset / base ---------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body.ikea-style {
+    margin: 0;
+    font-family: var(--font-stack);
+    color: var(--text-default);
+    background: var(--white);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+}
+
+/* ---------- IKEA-logo (CSS-bygget, ikke IKEAs asset) ---------- */
+
+.ikea-logo {
+    display: inline-block;
+    background: var(--ikea-yellow);
+    color: var(--ikea-blue);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 0.5px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 3px solid var(--ikea-blue);
+    line-height: 1;
+    font-family: var(--font-stack);
+    user-select: none;
+}
+
+/* ---------- Auth-layout (login + signup) ---------- */
+
+.auth-layout {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    min-height: 100vh;
+}
+
+.auth-left {
+    background: var(--ikea-blue);
+    color: var(--white);
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.auth-right {
+    background: var(--white);
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow-y: auto;
+}
+
+.auth-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 22px;
+    transition: background 0.15s;
+}
+
+.auth-back:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-left-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+}
+
+.auth-left-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 480px;
+}
+
+.auth-heading {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.auth-heading .accent {
+    color: var(--ikea-yellow);
+}
+
+.auth-footer {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.auth-footer a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.auth-footer .prototype-note {
+    display: block;
+    margin-top: 6px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Formularkomponenter ---------- */
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.form-field label,
+.form-section-title {
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.form-section-title {
+    font-weight: 700;
+    color: var(--text-default);
+    font-size: 18px;
+    margin: 28px 0 14px;
+}
+
+.form-section-title:first-of-type {
+    margin-top: 8px;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-input);
+    font-size: 16px;
+    font-family: var(--font-stack);
+    background: var(--white);
+    color: var(--text-default);
+    transition: border-color 0.15s;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--input-border-focus);
+    border-width: 2px;
+    padding: 0 13px; /* kompenser for ekstra border-width */
+}
+
+.input-hint {
+    color: var(--input-text-hint);
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 4px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon .form-input {
+    padding-right: 48px;
+}
+
+.input-icon-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-icon-btn:hover {
+    background: #F5F5F5;
+}
+
+/* ---------- Links ---------- */
+
+.text-link {
+    color: var(--text-default);
+    font-weight: 700;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.text-link:hover {
+    color: var(--ikea-blue);
+}
+
+.link-row {
+    margin: -10px 0 22px;
+}
+
+/* ---------- Checkbox-rækker ---------- */
+
+.checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 18px 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+.checkbox-row input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    accent-color: var(--black);
+    cursor: pointer;
+}
+
+.checkbox-row label {
+    cursor: pointer;
+}
+
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #EEEEEE;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+    font-family: serif;
+    margin-left: auto;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+/* ---------- Knapper ---------- */
+
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 56px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-stack);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    border: none;
+    padding: 0 24px;
+}
+
+.btn-primary {
+    background: var(--btn-primary-bg);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--btn-primary-bg-hover);
+}
+
+.btn-primary:disabled {
+    background: #B7B7B7;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--text-default);
+    border: 1px solid var(--btn-secondary-border);
+}
+
+.btn-secondary:hover {
+    background: var(--btn-secondary-bg-hover);
+}
+
+/* ---------- Divider med tekst ---------- */
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #E0E0E0;
+}
+
+/* ---------- Login-side ---------- */
+
+.login-form {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.login-engangskode {
+    text-align: center;
+    margin-top: 0;
+}
+
+.login-signup-prompt {
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    margin: 0 0 16px;
+}
+
+.signup-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--radius-input);
+    margin-bottom: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.alert-error {
+    background: var(--input-bg-error);
+    color: var(--text-error);
+    border-left: 4px solid var(--text-error);
+}
+
+.alert-info {
+    background: #EAF2FA;
+    color: var(--ikea-blue);
+    border-left: 4px solid var(--ikea-blue);
+}
+
+/* ---------- Signup-business-side ---------- */
+
+.signup-form {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.signup-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.signup-form .form-row .form-field {
+    margin-bottom: 14px;
+}
+
+.signup-benefits {
+    list-style: disc;
+    padding-left: 22px;
+    margin: 18px 0 12px;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.signup-tagline {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.signup-left-intro {
+    color: var(--text-default);
+    background: var(--white);
+    padding: 32px 48px;
+}
+
+.signup-left-intro .auth-heading {
+    color: var(--text-default);
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.placeholder-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.placeholder-photo {
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, #DCE4EA 0%, #B7C5D1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 32px;
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+.placeholder-photo::after {
+    content: "📷";
+    font-size: 28px;
+    opacity: 0.6;
+}
+
+/* Signup bruger hvid venstre baggrund (ikke blå), så header-elementer skifter farve */
+
+.signup-page .auth-left {
+    background: var(--white);
+    color: var(--text-default);
+    padding: 32px 48px 48px;
+}
+
+.signup-page .auth-back {
+    color: var(--text-default);
+}
+
+.signup-page .auth-back:hover {
+    background: #F5F5F5;
+}
+
+.signup-page .auth-footer {
+    color: var(--text-muted);
+}
+
+.signup-page .auth-footer .prototype-note {
+    color: #888;
+}
+
+/* ==========================================================================
+   HOME — IKEA-stil forside (efter login)
+   ========================================================================== */
+
+.ikea-home {
+    background: #F5F5F5;
+    min-height: 100vh;
+}
+
+/* ---------- IKEA-topbar ---------- */
+
+.ikea-topbar {
+    background: var(--white);
+    border-bottom: 1px solid #E5E5E5;
+    padding: 14px 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.ikea-topbar-logo {
+    text-decoration: none;
+}
+
+.ikea-search {
+    position: relative;
+    max-width: 720px;
+    width: 100%;
+    justify-self: center;
+}
+
+.ikea-search input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #DFDFDF;
+    border-radius: 28px;
+    padding: 0 56px 0 20px;
+    font-size: 15px;
+    background: #F5F5F5;
+    font-family: var(--font-stack);
+}
+
+.ikea-search input:focus {
+    outline: none;
+    background: var(--white);
+    border-color: var(--input-border-focus);
+}
+
+.ikea-search-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ikea-topbar-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.ikea-topbar-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: var(--text-default);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.ikea-topbar-link:hover {
+    background: #F5F5F5;
+}
+
+.ikea-topbar-link .icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+/* ---------- Sekundær nav-bar (kategorier) ---------- */
+
+.ikea-subnav {
+    background: var(--white);
+    border-bottom: 1px solid #E5E5E5;
+    padding: 0 32px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.ikea-subnav a {
+    display: inline-block;
+    padding: 14px 18px;
+    color: var(--text-default);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+}
+
+.ikea-subnav a:hover {
+    border-bottom-color: var(--ikea-blue);
+}
+
+.ikea-subnav a.active {
+    border-bottom-color: var(--ikea-blue);
+    color: var(--ikea-blue);
+}
+
+/* ---------- Container ---------- */
+
+.ikea-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+/* ---------- Hero ---------- */
+
+.ikea-hero {
+    background: var(--ikea-yellow);
+    border-radius: 16px;
+    padding: 56px 64px;
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.ikea-hero-eyebrow {
+    color: var(--ikea-blue);
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.ikea-hero-title {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--ikea-blue);
+    margin: 0 0 16px;
+}
+
+.ikea-hero-text {
+    color: var(--text-default);
+    font-size: 17px;
+    line-height: 1.5;
+    margin: 0 0 28px;
+}
+
+.ikea-hero-cta {
+    display: inline-block;
+    background: var(--black);
+    color: var(--white);
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.ikea-hero-cta:hover {
+    background: #000;
+}
+
+.ikea-hero-illustration {
+    background:
+        linear-gradient(135deg, rgba(0, 88, 163, 0.18) 0%, rgba(0, 88, 163, 0.06) 100%);
+    border-radius: 12px;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+}
+
+/* ---------- Section heading ---------- */
+
+.ikea-section-heading {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 18px;
+    color: var(--text-default);
+}
+
+.ikea-section-sub {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin: -10px 0 22px;
+}
+
+/* ---------- Action cards (3-up) ---------- */
+
+.ikea-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+}
+
+.ikea-action-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px;
+    text-decoration: none;
+    color: var(--text-default);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    border: 1px solid #E5E5E5;
+}
+
+.ikea-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ikea-action-card .icon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.ikea-action-card h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ikea-action-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* ---------- Produktgrid ---------- */
+
+.ikea-products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+}
+
+.ikea-product-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #E5E5E5;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s;
+}
+
+.ikea-product-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ikea-product-image {
+    background: #F0F3F5;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    color: var(--ikea-blue);
+}
+
+.ikea-product-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ikea-product-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-default);
+}
+
+.ikea-product-category {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.ikea-product-price {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--text-default);
+}
+
+.ikea-product-price small {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.ikea-product-cta {
+    margin-top: 12px;
+    background: var(--ikea-blue);
+    color: var(--white);
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.ikea-product-cta:hover {
+    background: #004A8B;
+}
+
+/* ---------- Topbar-avatar (initialer i sort cirkel) ---------- */
+
+.ikea-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--black);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.ikea-topbar-link {
+    flex-direction: row;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   CUSTOMER PROFIL — IKEA loyalty hub stil
+   ========================================================================== */
+
+.loyalty-layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+}
+
+/* ---------- Sidebar ---------- */
+
+.loyalty-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-self: start;
+    position: sticky;
+    top: 132px; /* under topbar + subnav */
+}
+
+.loyalty-sidebar-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--text-default);
+    text-decoration: none;
+    font-size: 15px;
+    border-left: 3px solid transparent;
+}
+
+.loyalty-sidebar-item:hover {
+    background: #EAEAEA;
+}
+
+.loyalty-sidebar-item.active {
+    border-left-color: var(--black);
+    font-weight: 700;
+}
+
+.loyalty-sidebar-item strong {
+    font-weight: 700;
+}
+
+.loyalty-badge {
+    background: var(--ikea-yellow);
+    color: var(--text-default);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ---------- Main ---------- */
+
+.loyalty-main {
+    min-width: 0; /* så grid-cellen kan skrumpe */
+}
+
+/* ---------- Blå hero med navn + medlemsnummer ---------- */
+
+.loyalty-hero {
+    background:
+        radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 40%),
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 12px),
+        var(--ikea-blue);
+    color: var(--white);
+    border-radius: 16px;
+    padding: 60px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    margin-bottom: 32px;
+    min-height: 200px;
+}
+
+.loyalty-hero-title {
+    font-size: 44px;
+    font-weight: 900;
+    margin: 0 0 18px;
+    line-height: 1;
+}
+
+.loyalty-hero-member {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--white);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-family: var(--font-stack);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.loyalty-hero-member:hover {
+    background: rgba(0, 0, 0, 0.32);
+}
+
+.loyalty-hero-badge {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--ikea-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 900;
+    font-size: 13px;
+    line-height: 1.2;
+    border: 4px solid var(--ikea-yellow);
+    flex-shrink: 0;
+}
+
+.loyalty-hero-badge .badge-inner {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- Faneblade ---------- */
+
+.loyalty-tabs {
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid #E0E0E0;
+    margin-bottom: 28px;
+}
+
+.loyalty-tab {
+    background: none;
+    border: none;
+    padding: 14px 4px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-family: var(--font-stack);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.loyalty-tab.active {
+    color: var(--text-default);
+    border-bottom-color: var(--black);
+}
+
+.loyalty-tab:hover {
+    color: var(--text-default);
+}
+
+.loyalty-tab .icon {
+    font-size: 14px;
+}
+
+/* ---------- Section title ---------- */
+
+.loyalty-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 18px;
+    color: var(--text-default);
+}
+
+/* ---------- 3-up "Sådan kommer du i gang" ---------- */
+
+.loyalty-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.loyalty-card {
+    background: #F5F5F5;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--text-default);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 200px;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.loyalty-card:hover {
+    background: #EAEAEA;
+    transform: translateY(-2px);
+}
+
+.loyalty-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.loyalty-card h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.loyalty-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+/* ---------- Impact-card og contracts-card på profilen ---------- */
+
+.customer-page .loyalty-impact-card,
+.customer-page .loyalty-contracts-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+/* Contracts-tabellen kan nemt vokse forbi card-bredden med 10+ kolonner.
+   overflow-x: auto giver horisontal scroll uden at sprænge cardet. */
+.customer-page .loyalty-contracts-card {
+    overflow-x: auto;
+}
+
+.customer-page table {
+    width: 100%;
+    min-width: 880px;        /* sikrer at kolonner ikke crusher; udløser scroll på smalle skærme */
+    border-collapse: collapse;
+}
+
+.customer-page th,
+.customer-page td {
+    border-bottom: 1px solid #E6E6E6;
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.customer-page th {
+    background: #F5F5F5;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.customer-page .impact-card {
+    text-align: center;
+}
+
+.customer-page .impact-number {
+    font-size: 56px;
+    font-weight: 900;
+    color: #0a7d36;
+    margin: 22px 0 6px;
+}
+
+.customer-page .impact-label {
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.customer-page .eyebrow {
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin: 0 0 10px;
+    color: var(--ikea-blue);
+}
+
+.customer-page .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 24px 0;
+}
+
+.customer-page .metrics div {
+    background: #F5F5F5;
+    padding: 22px;
+    border-radius: 12px;
+}
+
+.customer-page .metrics span {
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.customer-page .metrics strong {
+    font-size: 22px;
+}
+
+.customer-page .note {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   KURV-IKON I TOPBAR
+   ========================================================================== */
+
+.ikea-cart-link {
+    position: relative;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ikea-cart-link .icon {
+    font-size: 24px;
+}
+
+.ikea-cart-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 11px;
+    background: var(--ikea-blue);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   SHOP-HOME (webshop-style forside)
+   ========================================================================== */
+
+.shop-container {
+    padding-top: 24px;
+}
+
+.shop-hero {
+    background:
+        radial-gradient(circle at 85% 50%, var(--ikea-yellow) 0%, var(--ikea-yellow) 35%, transparent 36%),
+        #FFF8DC;
+    border-radius: 16px;
+    padding: 64px 56px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.shop-hero-text { max-width: 560px; }
+
+.shop-hero-title {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--ikea-blue);
+    margin: 0 0 16px;
+}
+
+.shop-hero-sub {
+    font-size: 17px;
+    color: var(--text-default);
+    margin: 0;
+}
+
+/* ---------- Filterbar ---------- */
+
+.shop-filterbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #E5E5E5;
+    flex-wrap: wrap;
+}
+
+.shop-filterbar-label {
+    font-weight: 700;
+    color: var(--text-default);
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.shop-chip {
+    background: var(--white);
+    border: 1px solid var(--input-border);
+    color: var(--text-default);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--font-stack);
+}
+
+.shop-chip:hover { background: #F5F5F5; }
+
+.shop-chip.active {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+}
+
+.shop-result-count {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* ---------- Produktgrid ---------- */
+
+.shop-products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+}
+
+.shop-product-card {
+    background: var(--white);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-default);
+    overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid transparent;
+}
+
+.shop-product-card:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    border-color: #E5E5E5;
+}
+
+.shop-product-image {
+    background: #F4F4F4;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    color: var(--ikea-blue);
+    overflow: hidden;
+}
+
+.shop-product-image.has-photo,
+.product-image-main.has-photo,
+.ikea-product-image.has-photo,
+.cart-item-image.has-photo {
+    padding: 0;
+    background: var(--white);
+}
+
+.shop-product-image img,
+.product-image-main img,
+.ikea-product-image img,
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: inherit;
+}
+
+.shop-product-info {
+    padding: 16px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.shop-product-name {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.shop-product-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.shop-product-pricing {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #EFEFEF;
+}
+
+.shop-price-sale,
+.shop-price-lease {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.shop-price-divider {
+    width: 1px;
+    background: #E5E5E5;
+}
+
+.shop-price-sale .price-value,
+.shop-price-lease .price-value {
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--text-default);
+}
+
+.shop-price-sale .price-value small,
+.shop-price-lease .price-value small {
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.shop-price-sale .price-label,
+.shop-price-lease .price-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+}
+
+.shop-price-lease .price-label {
+    color: var(--ikea-blue);
+}
+
+.shop-product-availability {
+    margin-top: 8px;
+    color: #0a7d36;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---------- Salgsbanner ---------- */
+
+.shop-promo {
+    background: var(--ikea-blue);
+    color: var(--white);
+    border-radius: 16px;
+    padding: 48px 56px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 24px;
+}
+
+.shop-promo .ikea-hero-eyebrow { color: rgba(255, 255, 255, 0.9); }
+
+.shop-promo-title {
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 12px;
+}
+
+.shop-promo-text {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 16px;
+    max-width: 540px;
+}
+
+/* ==========================================================================
+   PRODUCT DETAIL page
+   ========================================================================== */
+
+.shop-breadcrumb {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 16px 0 24px;
+}
+
+.shop-breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.shop-breadcrumb a:hover { text-decoration: underline; color: var(--text-default); }
+
+.product-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+}
+
+.product-image-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.product-image-main {
+    background: #F4F4F4;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 220px;
+    color: var(--ikea-blue);
+}
+
+.product-image-thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.product-thumb {
+    aspect-ratio: 1 / 1;
+    background: #F4F4F4;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.product-thumb.active { border-color: var(--black); }
+
+.product-category {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 14px;
+}
+
+.product-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 4px 0 8px;
+}
+
+.product-subtitle {
+    color: var(--text-muted);
+    margin: 0 0 18px;
+    font-size: 15px;
+}
+
+.product-availability {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.product-availability .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.product-availability.in-stock { background: #E8F5EE; color: #0a7d36; }
+.product-availability.in-stock .dot { background: #0a7d36; }
+
+.product-availability.out-of-stock { background: #FDECEE; color: #B00020; }
+.product-availability.out-of-stock .dot { background: #B00020; }
+
+.product-description {
+    color: var(--text-default);
+    line-height: 1.6;
+    margin: 0 0 24px;
+}
+
+/* ---------- Køb / lej-bokse ---------- */
+
+.product-purchase-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.purchase-option {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #E5E5E5;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.purchase-option.purchase-lease {
+    background: #F5F8FA;
+    border: 2px solid var(--ikea-blue);
+}
+
+.option-header h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.respace-accent { color: var(--ikea-blue); }
+
+.option-tagline {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+.option-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.price-large {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.price-suffix {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.option-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.option-benefits li::before {
+    content: "✓ ";
+    color: #0a7d36;
+    font-weight: 700;
+}
+
+.purchase-option .btn-primary { margin-top: auto; }
+
+.btn-primary.respace-cta {
+    background: var(--ikea-blue);
+}
+
+.btn-primary.respace-cta:hover { background: #004A8B; }
+
+/* ---------- Specs ---------- */
+
+.product-specs h3 {
+    font-size: 18px;
+    margin: 0 0 12px;
+}
+
+.product-specs dl {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+    border-top: 1px solid #E5E5E5;
+    padding-top: 16px;
+}
+
+.product-specs dt {
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.product-specs dd { margin: 0; }
+
+/* ==========================================================================
+   CART
+   ========================================================================== */
+
+.cart-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 16px 0 24px;
+}
+
+.cart-title-count {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.cart-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cart-item {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid #E5E5E5;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+}
+
+.cart-item-image {
+    background: #F4F4F4;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: var(--ikea-blue);
+}
+
+.cart-item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cart-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cart-item-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.cart-item-kind {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.cart-item-kind.lease  { background: #E8F2FB; color: var(--ikea-blue); }
+.cart-item-kind.purchase { background: #FFF3D6; color: #8E6500; }
+
+.cart-item-meta {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.cart-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.cart-item-price {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.cart-remove {
+    color: var(--text-error);
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.cart-remove:hover { color: #800018; }
+
+/* ---------- Sammendrag ---------- */
+
+.cart-summary {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #E5E5E5;
+    position: sticky;
+    top: 140px;
+}
+
+.cart-summary h2 {
+    margin: 0 0 18px;
+    font-size: 20px;
+}
+
+.cart-summary-lines {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    margin: 0 0 16px;
+    padding: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.cart-summary-lines dt { margin: 0; }
+.cart-summary-lines dd { margin: 0; text-align: right; }
+
+.cart-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 2px solid var(--black);
+    padding-top: 14px;
+    margin-bottom: 18px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.cart-summary-total strong { font-size: 24px; }
+
+.cart-summary-note {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0 0 18px;
+}
+
+.cart-checkout-btn { width: 100%; }
+
+.cart-continue {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+}
+
+.cart-summary-info {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #EEEEEE;
+    font-size: 14px;
+}
+
+/* ---------- Tom kurv ---------- */
+
+.cart-empty {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 80px 40px;
+    text-align: center;
+    border: 1px solid #E5E5E5;
+}
+
+.cart-empty-icon {
+    font-size: 80px;
+    margin-bottom: 16px;
+}
+
+.cart-empty h2 {
+    margin: 0 0 8px;
+    font-size: 24px;
+}
+
+.cart-empty p {
+    color: var(--text-muted);
+    margin: 0 0 24px;
+}
+
+/* ==========================================================================
+   Generiske tabel- og link-hjælpere
+   ========================================================================== */
+
+.customer-link {
+    color: var(--ikea-blue);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.customer-link:hover {
+    color: #004A8B;
+}
+
+td.nowrap, th.nowrap {
+    white-space: nowrap;
+}
+
+td.col-actions, th.col-actions {
+    white-space: nowrap;
+    min-width: 170px;
+    line-height: 1.8;
+}
+
+/* ==========================================================================
+   NEW-CONTRACT side
+   ========================================================================== */
+
+.new-contract-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 28px;
+    align-items: start;
+}
+
+.new-contract-page .loyalty-impact-card {
+    margin-bottom: 0;
+}
+
+.new-contract-form .form-field {
+    margin-bottom: 18px;
+}
+
+.new-contract-form .btn-primary {
+    width: 100%;
+}
+
+/* ---------- IKEA footer ---------- */
+
+.ikea-footer {
+    background: var(--ikea-blue);
+    color: var(--white);
+    padding: 32px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ikea-footer .prototype-note {
+    margin-top: 6px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Mobil (responsivt) ---------- */
+
+@media (max-width: 768px) {
+    .auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-left {
+        padding: 24px;
+        min-height: 240px;
+    }
+
+    .auth-right {
+        padding: 32px 24px;
+    }
+
+    .auth-heading {
+        font-size: 26px;
+    }
+
+    .signup-form .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .placeholder-photos {
+        grid-template-columns: 1fr;
+    }
+
+    .ikea-topbar {
+        grid-template-columns: auto 1fr;
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
+    .ikea-topbar-actions {
+        grid-column: 1 / -1;
+        justify-content: space-around;
+    }
+
+    .ikea-search {
+        grid-column: 1 / -1;
+    }
+
+    .ikea-subnav {
+        padding: 0 16px;
+    }
+
+    .ikea-container {
+        padding: 20px 16px;
+    }
+
+    .ikea-hero {
+        grid-template-columns: 1fr;
+        padding: 32px 28px;
+    }
+
+    .ikea-hero-title {
+        font-size: 32px;
+    }
+
+    .ikea-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .ikea-products {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .loyalty-layout {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .loyalty-sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .loyalty-sidebar-item {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .loyalty-hero {
+        grid-template-columns: 1fr;
+        padding: 32px 24px;
+        text-align: center;
+    }
+
+    .loyalty-hero-badge {
+        margin: 0 auto;
+        width: 90px;
+        height: 90px;
+        font-size: 12px;
+    }
+
+    .loyalty-hero-title {
+        font-size: 32px;
+    }
+
+    .loyalty-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-page .metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .new-contract-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .new-contract-grid .ikea-products {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .shop-hero {
+        padding: 36px 24px;
+    }
+
+    .shop-hero-title { font-size: 32px; }
+
+    .shop-products { grid-template-columns: 1fr 1fr; }
+
+    .shop-promo {
+        grid-template-columns: 1fr;
+        padding: 32px 24px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .product-image-main { font-size: 140px; }
+
+    .product-purchase-options { grid-template-columns: 1fr; }
+
+    .product-specs dl { grid-template-columns: 1fr; }
+
+    .cart-grid { grid-template-columns: 1fr; }
+
+    .cart-item { grid-template-columns: 80px 1fr; gap: 14px; }
+
+    .cart-summary { position: static; }
+}

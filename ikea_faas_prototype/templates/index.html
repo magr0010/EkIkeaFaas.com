@@ -1,0 +1,115 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Opret ny FaaS-aftale — IKEA{% endblock %}
+{% block body_class %}ikea-home new-contract-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<div class="ikea-container">
+
+    {# Blå hero — passer til CTA-konteksten #}
+    <section class="loyalty-hero" style="margin-bottom: 32px;">
+        <div class="loyalty-hero-content">
+            <p class="ikea-hero-eyebrow" style="color: rgba(255,255,255,0.9);">Furniture as a Service</p>
+            <h1 class="loyalty-hero-title">Opret en ny FaaS-aftale</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; max-width: 540px; margin: 12px 0 0;">
+                Vælg et møbel og en lejeperiode. Vi beregner den estimerede CO2e-besparelse
+                automatisk og opretter aftalen på din profil.
+            </p>
+        </div>
+        <div class="loyalty-hero-badge" aria-hidden="true">
+            <span class="badge-inner">Lej<br>som du vil</span>
+        </div>
+    </section>
+
+    {# To-kolonne layout: formular til venstre, produktoversigt til højre #}
+    <div class="new-contract-grid">
+
+        {# ---------- Formular ---------- #}
+        <section class="loyalty-impact-card" style="text-align: left; margin-bottom: 0;">
+            <p class="eyebrow">Bestiller som</p>
+            <h2 style="margin: 4px 0 4px; font-size: 18px;">{{ customer.company_name }}</h2>
+            <p style="margin: 0 0 24px; color: var(--text-muted); font-size: 14px;">
+                CVR {{ customer.cvr_number }} &middot; {{ customer.contact_person }} &middot; {{ customer.email }}
+            </p>
+
+            <h2 class="loyalty-section-title" style="margin-top: 8px;">Aftaledetaljer</h2>
+
+            <form action="{{ url_for('create_contract') }}" method="post" class="new-contract-form">
+                {# Skjulte felter — backend slår alligevel kunde op via CVR #}
+                <input type="hidden" name="company_name"   value="{{ customer.company_name }}">
+                <input type="hidden" name="cvr_number"     value="{{ customer.cvr_number }}">
+                <input type="hidden" name="contact_person" value="{{ customer.contact_person }}">
+                <input type="hidden" name="email"          value="{{ customer.email }}">
+                <input type="hidden" name="zip_code"       value="{{ customer.zip_code or '' }}">
+
+                <div class="form-field">
+                    <label for="product_id">Vælg møbel</label>
+                    <select class="form-select" name="product_id" id="product_id" required>
+                        {% for product in products %}
+                            <option value="{{ product.product_id }}">
+                                {{ product.product_name }} &mdash; {{ product.available_assets }} ledige &mdash; {{ product.monthly_price_dkk|dk_number(2) }} DKK/mdr
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="rental_months">Lejeperiode</label>
+                    <select class="form-select" name="rental_months" id="rental_months" required>
+                        <option value="3">3 måneder</option>
+                        <option value="6">6 måneder</option>
+                        <option value="12">12 måneder</option>
+                        <option value="24">24 måneder</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top: 8px;">Beregn og opret aftale</button>
+            </form>
+        </section>
+
+        {# ---------- Produkter til reference ---------- #}
+        <aside>
+            <h2 class="loyalty-section-title">Vores sortiment</h2>
+            <div class="ikea-products" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+                {% for product in products %}
+                <div class="ikea-product-card">
+                    <div class="ikea-product-image{% if product.image_url %} has-photo{% endif %}" aria-hidden="true">
+                        {% if product.image_url %}
+                        <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.product_name }}">
+                        {% else %}
+                        {%- if product.category == "Desk" -%}🪑
+                        {%- elif product.category == "Chair" -%}💺
+                        {%- elif product.category == "Sofa" -%}🛋️
+                        {%- elif product.category == "Storage" -%}📦
+                        {%- else -%}🪞
+                        {%- endif -%}
+                        {% endif %}
+                    </div>
+                    <div class="ikea-product-body">
+                        <div class="ikea-product-name">{{ product.product_name }}</div>
+                        <div class="ikea-product-category">{{ product.category }} · {{ product.available_assets }} ledige</div>
+                        <div class="ikea-product-price">
+                            {{ product.monthly_price_dkk|dk_number(2) }} DKK
+                            <small>/ måned</small>
+                        </div>
+                        <div style="margin-top: 6px; font-size: 13px; color: var(--text-muted);">
+                            Baseline: {{ product.baseline_co2e_kg|dk_number(2) }} kg CO2e
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+    </div>
+
+</div>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}

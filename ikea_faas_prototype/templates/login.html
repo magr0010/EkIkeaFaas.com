@@ -1,0 +1,118 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Log ind · IKEA FaaS{% endblock %}
+{% block body_class %}login-page{% endblock %}
+
+{% block content %}
+<div class="auth-layout">
+
+    <aside class="auth-left">
+        <div class="auth-left-top">
+            <a href="{{ url_for('index') }}" class="auth-back" aria-label="Tilbage">&larr;</a>
+            {% include "_ikea_logo.html" %}
+        </div>
+
+        <div class="auth-left-content">
+            <h1 class="auth-heading">
+                Hej! <span class="accent">Log ind</span> på din IKEA profil eller opret en profil
+            </h1>
+        </div>
+
+        <footer class="auth-footer">
+            IKEA.dk &middot; <a href="#">Cookie politik</a> og <a href="#">Håndtering af persondata</a><br>
+            &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+            <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+        </footer>
+    </aside>
+
+    <main class="auth-right">
+        <form class="login-form" method="post" action="{{ url_for('login') }}" novalidate>
+
+            {% if error %}
+            <div class="alert alert-error" role="alert">{{ error }}</div>
+            {% endif %}
+
+            {% if info %}
+            <div class="alert alert-info" role="status">{{ info }}</div>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="email">E-mail</label>
+                <input class="form-input" type="email" name="email" id="email" required autocomplete="email">
+            </div>
+
+            <div class="form-field">
+                <label for="password">Adgangskode</label>
+                <div class="input-with-icon">
+                    <input class="form-input" type="password" name="password" id="password" required autocomplete="current-password">
+                    <button type="button" class="input-icon-btn" id="toggle-password" aria-label="Vis adgangskode">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="link-row">
+                <a class="text-link" href="#">Har du glemt din adgangskode?</a>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" name="remember" id="remember">
+                <label for="remember">Husk mig på denne enhed, indtil jeg selv logger af</label>
+                <span class="info-icon" title="Vi bruger en cookie til at huske dig">i</span>
+            </div>
+
+            <div class="login-actions">
+                <button type="submit" class="btn-primary">Log ind</button>
+                <p class="login-engangskode">
+                    <a class="text-link" href="#">Log ind med engangskode i stedet</a>
+                </p>
+            </div>
+
+            <div class="divider">Eller</div>
+
+            <p class="login-signup-prompt">Har du ikke en IKEA profil? Opret en profil nu:</p>
+
+            <div class="signup-buttons">
+                <button type="button" class="btn-secondary" id="signup-private">Jeg er privatkunde</button>
+                <a class="btn-secondary" href="{{ url_for('signup_business') }}">Jeg er erhvervskunde</a>
+            </div>
+
+            <div id="private-notice" class="alert alert-info" role="status" style="display: none; margin-top: 18px;">
+                FaaS-prototypen er pt. en B2B-løsning. Vælg "Jeg er erhvervskunde" for at oprette en profil.
+            </div>
+
+        </form>
+    </main>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Skift type på adgangskode-feltet ved klik på øje-ikonet.
+    (function () {
+        const toggle = document.getElementById("toggle-password");
+        const pwd = document.getElementById("password");
+        if (!toggle || !pwd) return;
+        toggle.addEventListener("click", function () {
+            const isHidden = pwd.type === "password";
+            pwd.type = isHidden ? "text" : "password";
+            toggle.setAttribute("aria-label", isHidden ? "Skjul adgangskode" : "Vis adgangskode");
+        });
+    })();
+
+    // Privatkunde-knap viser inline-notice (FaaS er B2B-only).
+    (function () {
+        const btn = document.getElementById("signup-private");
+        const notice = document.getElementById("private-notice");
+        if (!btn || !notice) return;
+        btn.addEventListener("click", function () {
+            notice.style.display = "block";
+            notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends "auth_base.html" %}
+
+{% set first_name = customer.contact_person.split(' ')[0] if customer.contact_person else customer.company_name %}
+{% set member_id = "ReSpace-%010d-%s"|format(customer.customer_id, customer.cvr_number or "") %}
+
+{% block title %}Dit IKEA ReSpace — {{ customer.company_name }}{% endblock %}
+{% block body_class %}ikea-home customer-page{% endblock %}
+
+{% block content %}
+
+{% include "_ikea_topbar.html" %}
+
+<div class="loyalty-layout">
+
+    {# ---------- Sidebar ---------- #}
+    <aside class="loyalty-sidebar" aria-label="Profilnavigation">
+        <a href="#" class="loyalty-sidebar-item active">
+            <strong>Dit IKEA ReSpace</strong>
+        </a>
+        <a href="#contracts" class="loyalty-sidebar-item">Dine FaaS-aftaler</a>
+        <a href="#contracts" class="loyalty-sidebar-item">Dine kvitteringer</a>
+        <a href="#" class="loyalty-sidebar-item">Digitale gavekort og tilgodebeviser</a>
+        <a href="#" class="loyalty-sidebar-item">Profilindstillinger</a>
+        <a href="#" class="loyalty-sidebar-item">Data og privatlivspolitik</a>
+    </aside>
+
+    {# ---------- Main ---------- #}
+    <main class="loyalty-main">
+
+        {# Blå hero-banner med navn + medlemsnummer #}
+        <section class="loyalty-hero">
+            <div class="loyalty-hero-content">
+                <h1 class="loyalty-hero-title">Hej {{ first_name }}!</h1>
+                <button type="button" class="loyalty-hero-member" id="copy-member-id"
+                        data-member-id="{{ member_id }}" aria-label="Kopiér medlemsnummer">
+                    <span class="member-id-text">{{ member_id }}</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="loyalty-hero-badge" aria-hidden="true">
+                <span class="badge-inner">IKEA<br>ReSpace</span>
+            </div>
+        </section>
+
+        {# Faneblade — visuelt #}
+        <nav class="loyalty-tabs" aria-label="Profilsektioner">
+            <button class="loyalty-tab active" type="button">
+                <span class="icon">▦</span> Overblik
+            </button>
+            <button class="loyalty-tab" type="button">
+                <span class="icon">▭</span> Dine projekter
+            </button>
+        </nav>
+
+        {# "Sådan kommer du i gang" — 3 cards #}
+        <h2 class="loyalty-section-title">Sådan kommer du i gang</h2>
+        <div class="loyalty-cards">
+            <a class="loyalty-card" href="{{ url_for('new_contract') }}">
+                <span class="loyalty-card-icon">📝</span>
+                <h3>Opret ny FaaS-aftale</h3>
+                <p>Vælg et møbel, en lejeperiode og se den estimerede klimaeffekt med det samme.</p>
+            </a>
+            <a class="loyalty-card" href="#contracts">
+                <span class="loyalty-card-icon">🧾</span>
+                <h3>Dine kvitteringer</h3>
+                <p>Find detaljerede kvitteringer med CO2e-breakdown og bar chart for hver aftale.</p>
+            </a>
+            <a class="loyalty-card" href="#impact">
+                <span class="loyalty-card-icon">🌱</span>
+                <h3>Din klimaeffekt</h3>
+                <p>Se den samlede CO2e-besparelse på tværs af alle dine FaaS-aftaler.</p>
+            </a>
+        </div>
+
+        {# Klimaeffekt — den eksisterende impact-card #}
+        <section id="impact" class="card impact-card loyalty-impact-card">
+            <p class="eyebrow">Samlet effekt</p>
+            <div class="impact-number">{{ summary.total_saved|dk_number(2) }} kg CO2e</div>
+            <p class="impact-label">
+                Jeres FaaS-aftaler har sparet {{ summary.total_saved|dk_number(2) }} kg CO2e i alt
+                fordelt på {{ summary.contracts }} aftaler ({{ summary.active_contracts }} aktive).
+            </p>
+
+            <table class="breakdown-table">
+                <tbody>
+                    <tr>
+                        <td>Baseline (engangskøb)</td>
+                        <td class="value">{{ summary.total_baseline|dk_number(2) }} kg CO2e</td>
+                    </tr>
+                    <tr>
+                        <td>− Cirkulær emission (manufacturing-andel)</td>
+                        <td class="value">{{ summary.total_circular|dk_number(2) }} kg CO2e</td>
+                    </tr>
+                    <tr>
+                        <td>− Transport-emission (retur)</td>
+                        <td class="value">{{ summary.total_transport|dk_number(2) }} kg CO2e</td>
+                    </tr>
+                    <tr class="total">
+                        <td>= Netto-besparelse</td>
+                        <td class="value">{{ summary.total_saved|dk_number(2) }} kg CO2e</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-wrapper">
+                <canvas id="customerChart"
+                    data-baseline="{{ summary.total_baseline }}"
+                    data-circular="{{ summary.total_circular }}"
+                    data-transport="{{ summary.total_transport }}"></canvas>
+            </div>
+
+            <div class="metrics">
+                <div>
+                    <span>Antal aftaler</span>
+                    <strong>{{ summary.contracts }}</strong>
+                </div>
+                <div>
+                    <span>Gennemsnitlig besparelse</span>
+                    <strong>{{ summary.avg_saved|dk_number(2) }} kg CO2e</strong>
+                </div>
+                <div>
+                    <span>Virksomhed</span>
+                    <strong>{{ customer.company_name }}</strong>
+                </div>
+            </div>
+
+            <p class="note">
+                Tallene er testdata til prototypen og er ikke officielle IKEA-tal.
+            </p>
+        </section>
+
+        {# Kontrakter + kvitteringer #}
+        <section id="contracts" class="card loyalty-contracts-card">
+            <h2 style="margin: 0 0 18px;">Dine FaaS-aftaler</h2>
+            {% if contracts %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produkt</th>
+                        <th>Serienummer</th>
+                        <th>Periode</th>
+                        <th>Status</th>
+                        <th>Baseline</th>
+                        <th>Cirkulær</th>
+                        <th>Transport</th>
+                        <th>Sparet</th>
+                        <th class="col-actions">Handlinger</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in contracts %}
+                    <tr>
+                        <td>{{ row.contract_id }}</td>
+                        <td>{{ row.product_name }}</td>
+                        <td class="nowrap">{{ row.serial_number }}</td>
+                        <td class="nowrap">{{ row.start_date }}<br>&rarr; {{ row.end_date }}</td>
+                        <td>{{ row.status }}</td>
+                        <td class="nowrap">{{ row.baseline_co2e_kg|dk_number(2) }} kg</td>
+                        <td class="nowrap">{{ row.circular_co2e_kg|dk_number(2) }} kg</td>
+                        <td class="nowrap">{{ row.transport_co2e_kg|dk_number(2) }} kg</td>
+                        <td class="nowrap">{{ row.co2e_saved_kg|dk_number(2) }} kg</td>
+                        <td class="col-actions">
+                            <a class="customer-link" href="{{ url_for('impact', contract_id=row.contract_id) }}">Se kvittering</a>
+                            {% if row.status == "active" %}
+                            <br><a class="customer-link" href="{{ url_for('pickup_request', contract_id=row.contract_id) }}">Anmod om afhentning</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="color: var(--text-muted); margin: 8px 0 0;">
+                Du har endnu ingen FaaS-aftaler.
+                <a class="customer-link" href="{{ url_for('new_contract') }}">Opret din første aftale</a>.
+            </p>
+            {% endif %}
+        </section>
+
+    </main>
+</div>
+
+<footer class="ikea-footer">
+    &copy; Inter IKEA Systems B.V. 1999&ndash;2026
+    <span class="prototype-note">Studenterprototype — ikke IKEAs officielle side.</span>
+</footer>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    // Bar chart med stablet "FaaS"-søjle (cirkulær + transport)
+    (function () {
+        const canvas = document.getElementById("customerChart");
+        if (!canvas) return;
+
+        const baseline  = parseFloat(canvas.dataset.baseline)  || 0;
+        const circular  = parseFloat(canvas.dataset.circular)  || 0;
+        const transport = parseFloat(canvas.dataset.transport) || 0;
+        if (!baseline && !circular && !transport) return;
+
+        const fmt = (n) => n.toFixed(2).replace(".", ",") + " kg CO2e";
+
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels: ["Nye produkter (baseline)", "FaaS"],
+                datasets: [
+                    { label: "Baseline (engangskøb)",            data: [baseline, 0],   backgroundColor: "#b00020", borderRadius: 6, stack: "co2e" },
+                    { label: "Cirkulær (manufacturing-andel)",   data: [0, circular],   backgroundColor: "#0a7d36", borderRadius: 6, stack: "co2e" },
+                    { label: "Transport (retur)",                data: [0, transport],  backgroundColor: "#e8a02d", borderRadius: 6, stack: "co2e" }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true, position: "bottom",
+                        labels: { filter: (item) => item.datasetIndex !== 0 }
+                    },
+                    title: { display: true, text: "Samlet CO2e: nye produkter vs. FaaS", font: { size: 16, weight: "700" }, color: "#111" },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
+                },
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, beginAtZero: true, title: { display: true, text: "kg CO2e" }, ticks: { callback: (v) => v + " kg" } }
+                }
+            }
+        });
+    })();
+
+    // Kopiér medlemsnummer til udklipsholderen
+    (function () {
+        const btn = document.getElementById("copy-member-id");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+            const id = btn.dataset.memberId || "";
+            navigator.clipboard.writeText(id).then(() => {
+                const text = btn.querySelector(".member-id-text");
+                const original = text.textContent;
+                text.textContent = "Kopieret!";
+                setTimeout(() => { text.textContent = original; }, 1200);
+            }).catch(() => {});
+        });
+    })();
+</script>
+{% endblock %}
